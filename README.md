@@ -19,8 +19,11 @@ Além disso, será possível automatizar um processo que já acontece há bastan
 - **Frontend**: HTML, CSS
 - **Backend**: Node.js, Express
 - **Banco de Dados**: MongoDB
-- **Autenticação**: JWT (JSON Web Tokens)
-- **Hospedagem**: Heroku
+
+## Futuro site
+
+Utilização do Figma para planejar e estruturar o design do site de maneira organizada e visualmente atraente.
+https://www.figma.com/design/6eg2RWDZUsowZk3TTa9JHx/Untitled?node-id=0-1&t=OjiD8IIeD3H6UJqC-1
 
 ## Instalação
 
