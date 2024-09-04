@@ -1,5 +1,5 @@
 # Papeletas de Faltas - Gestão Digital
-
+# Dupla: Raquel Belchior e Caimi
 ## Sobre o Projeto
 
 O **Papeletas** é uma plataforma web desenvolvida para substituir as tradicionais papeletas de falta em papel, oferecendo uma solução digital eficiente e fácil de usar para o registro e a gestão de faltas.
