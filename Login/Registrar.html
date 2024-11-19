@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar</title>
+    <link rel="stylesheet" href="registrar.css">
+    <script defer src="registrar.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Registrar Novo Usuário</h1>
+        <form id="register-form">
+            <!-- Nome Completo -->
+            <label for="nome-completo">Nome Completo:</label>
+            <input type="text" id="nome-completo" name="nome_completo" placeholder="Digite seu nome completo" required>
+
+            <!-- Nome de Guerra -->
+            <label for="nome-guerra">Nome de Guerra:</label>
+            <input type="text" id="nome-guerra" name="nome_guerra" placeholder="Digite seu nome de guerra" required>
+
+            <!-- Posto -->
+            <label for="posto">Posto:</label>
+            <select id="posto" name="posto" required>
+                <option value="Alu">Aluno</option>
+                <option value="Svd Civ">Servidor Civil</option>
+                <option value="Ten">Tenente</option>
+                <option value="Cap">Capitão</option>
+                <option value="Maj">Major</option>
+                <option value="TC">Tenente-Coronel</option>
+                <option value="Cel">Coronel</option>
+            </select>
+
+            <!-- Email -->
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+
+            <!-- Senha -->
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+
+            <!-- Confirmar Senha -->
+            <label for="confirmar-senha">Confirmar Senha:</label>
+            <input type="password" id="confirmar-senha" name="confirmar_senha" placeholder="Confirme sua senha"
+                required>
+
+            <!-- Mensagem de Erro -->
+            <div id="error-message" class="error-message"></div>
+
+            <!-- Botão de Envio -->
+            <button type="submit">Registrar</button>
+            <a href="Inicial.html" class="button">Voltar</a>
+        </form>
+    </div>
+</body>
+
+</html>
