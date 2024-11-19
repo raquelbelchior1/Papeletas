@@ -1,19 +1,55 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Faltas - Home</title>
+    <link rel="stylesheet" href="home.css">
 </head>
 
 <body>
-    <h1>SFICR</h1>
-    <br> <br>
-    <a href="Login.html">Já TESTANDO SE FUNCIONA Conta? Faça o Login</a> <br> <br> <br>
-    <a href="Registrar.html"> Não possui Conta? Registre-se agora </a>
+    <div class="container">
+        <header>
+            <h1>Sistema de Gerenciamento de Faltas</h1>
+        </header>
 
+        <!-- Abas -->
+        <div class="tabs">
+            <button class="tab-link active" data-tab="criar-boletim">Criar Boletim</button>
+            <button class="tab-link" data-tab="consultar-boletim">Consultar Boletim</button>
+            <button class="tab-link" data-tab="boletins-pendentes">Boletins Pendentes</button>
+        </div>
 
+        <!-- Conteúdo das Abas -->
+        <div id="criar-boletim" class="tab-content active">
+            <h2>Criar Boletim</h2>
+            <p>Formulário para criação de boletim será exibido aqui.</p>
+        </div>
+
+        <div id="consultar-boletim" class="tab-content">
+            <h2>Consultar Boletim</h2>
+            <p>Lista de boletins criados será exibida aqui.</p>
+        </div>
+
+        <div id="boletins-pendentes" class="tab-content">
+            <h2>Boletins Pendentes</h2>
+            <p>Boletins que precisam de assinatura serão exibidos aqui.</p>
+        </div>
+    </div>
+
+    <script>
+        // Troca de abas
+        document.querySelectorAll('.tab-link').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-link').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
 </body>
 
 </html>

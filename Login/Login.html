@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="login.css">
 </head>
+
 <body>
-    <div class="login-container">
-        <h2>Login</h2>
-        <form id="login-form">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            
-            <label for="password">Password:</label>
+    <div class="container">
+        <h1>Login</h1>
+        <form action="/api/login" method="POST">
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Senha:</label>
             <input type="password" id="password" name="password" required>
-            
-            <button type="submit">Login</button>
+            <button type="submit">Entrar</button>
+            <a href="Inicial.html" class="button">Voltar</a>
         </form>
-
-        <p>Não possui conta? <a href="Registrar.html" id="register-link">Crie uma conta agora</a></p>
     </div>
-
-    <script src="Login.js"></script>
 </body>
+
 </html>
