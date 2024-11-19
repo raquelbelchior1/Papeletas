@@ -5,21 +5,76 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="Login.css">
 </head>
 
 <body>
     <div class="container">
         <h1>Login</h1>
-        <form action="/api/login" method="POST">
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" required>
-            <label for="password">Senha:</label>
-            <input type="password" id="password" name="password" required>
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required placeholder="Digite seu e-mail">
+            </div>
+            <div class="input-group">
+                <label for="password">Senha:</label>
+                <input type="password" id="password" name="password" required placeholder="Digite sua senha">
+            </div>
+            
+            <!-- Área para exibição de mensagens de erro -->
+            <div id="error-message" class="error-message"></div>
+            
             <button type="submit">Entrar</button>
-            <a href="Inicial.html" class="button">Voltar</a>
+            
+            <!-- Link para voltar -->
+            <div class="redirect-link">
+                <a href="Inicial.html" class="button">Voltar</a>
+            </div>
         </form>
     </div>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impede o comportamento padrão de envio de formulário
+    
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+    
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password }),
+                });
+    
+                const data = await response.json();
+    
+                if (response.ok) {
+                    // Login bem-sucedido
+                    alert('Login realizado com sucesso!');
+                    localStorage.setItem('token', data.token); // Armazena o token no localStorage
+    
+                    // Verificar o tipo de usuário (aluno ou professor) na resposta
+                    const tipoUsuario = data.tipoUsuario; // Assume que o backend retorna 'aluno' ou 'professor'
+    
+                    // Redireciona para a página correspondente
+                    if (tipoUsuario === 'aluno') {
+                        window.location.href = '/frontend/home/aluno.html'; // Caminho relativo
+                    } else if (tipoUsuario === 'professor') {
+                        window.location.href = '/frontend/home/professor.html'; // Caminho relativo
+                    } else {
+                        // Caso o tipo de usuário não seja reconhecido
+                        document.getElementById('error-message').textContent = 'Tipo de usuário inválido';
+                    }
+                } else {
+                    // Exibe mensagem de erro no login
+                    document.getElementById('error-message').textContent = data.message || 'Erro ao fazer login';
+                }
+            } catch (error) {
+                // Mensagem de erro caso ocorra falha na comunicação com o backend
+                document.getElementById('error-message').textContent = 'Erro de conexão com o servidor';
+            }
+        });
+    </script>
 </body>
 
 </html>

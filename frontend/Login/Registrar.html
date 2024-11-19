@@ -1,59 +1,105 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar</title>
-    <link rel="stylesheet" href="registrar.css">
-    <script defer src="registrar.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar</title>
+  <link rel="stylesheet" href="Registrar.css">
 </head>
-
 <body>
-    <div class="container">
-        <h1>Registrar Novo Usuário</h1>
-        <form id="register-form">
-            <!-- Nome Completo -->
-            <label for="nome-completo">Nome Completo:</label>
-            <input type="text" id="nome-completo" name="nome_completo" placeholder="Digite seu nome completo" required>
+  <div class="container">
+    <h1>Registrar-se</h1>
+    <form id="register-form">
+      <!-- Nome Completo -->
+      <label for="nome">Nome Completo</label>
+      <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+    
+      <!-- E-mail -->
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+    
+      <!-- Senha -->
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+    
+      <!-- Confirmar Senha -->
+      <label for="confirmar-senha">Confirmar Senha</label>
+      <input type="password" id="confirmar-senha" name="confirmar_senha" placeholder="Confirme sua senha" required>
+    
+      <!-- Tipo de Usuário -->
+      <label for="tipo">Tipo de Usuário</label>
+      <select id="tipo" name="tipo" required>
+        <option value="aluno">Aluno</option>
+        <option value="professor">Professor</option>
+      </select>
+    
+      <!-- Matéria (apenas para professores) -->
+      <div id="materia-container">
+        <label for="materia">Matéria</label>
+        <input type="text" id="materia" name="materia" placeholder="Digite a matéria que você ensina">
+      </div>
+    
+      <!-- Mensagem de erro -->
+      <div id="error-message" class="error-message"></div>
+    
+      <!-- Botão de Envio -->
+      <button type="submit">Registrar</button>
+    </form>
+  </div>
 
-            <!-- Nome de Guerra -->
-            <label for="nome-guerra">Nome de Guerra:</label>
-            <input type="text" id="nome-guerra" name="nome_guerra" placeholder="Digite seu nome de guerra" required>
+  <script>
+    // Mostrar ou ocultar o campo de matéria com base no tipo de usuário
+    document.getElementById('tipo').addEventListener('change', function () {
+      const materiaContainer = document.getElementById('materia-container');
+      if (this.value === 'professor') {
+        materiaContainer.style.display = 'block';
+      } else {
+        materiaContainer.style.display = 'none';
+      }
+    });
 
-            <!-- Posto -->
-            <label for="posto">Posto:</label>
-            <select id="posto" name="posto" required>
-                <option value="Alu">Aluno</option>
-                <option value="Svd Civ">Servidor Civil</option>
-                <option value="Ten">Tenente</option>
-                <option value="Cap">Capitão</option>
-                <option value="Maj">Major</option>
-                <option value="TC">Tenente-Coronel</option>
-                <option value="Cel">Coronel</option>
-            </select>
+    // Enviar dados para o backend
+    document.getElementById('register-form').addEventListener('submit', async function (event) {
+      event.preventDefault(); // Evitar o comportamento padrão do formulário
 
-            <!-- Email -->
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+      // Capturar os dados do formulário
+      const formData = {
+        nome: document.getElementById('nome').value,
+        email: document.getElementById('email').value,
+        senha: document.getElementById('senha').value,
+        confirmar_senha: document.getElementById('confirmar-senha').value,
+        tipo: document.getElementById('tipo').value,
+        materia: document.getElementById('materia').value || null
+      };
 
-            <!-- Senha -->
-            <label for="senha">Senha:</label>
-            <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+      // Validação de senhas
+      if (formData.senha !== formData.confirmar_senha) {
+        document.getElementById('error-message').textContent = "As senhas não coincidem.";
+        return;
+      }
 
-            <!-- Confirmar Senha -->
-            <label for="confirmar-senha">Confirmar Senha:</label>
-            <input type="password" id="confirmar-senha" name="confirmar_senha" placeholder="Confirme sua senha"
-                required>
+      try {
+        // Enviar os dados para o backend
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
 
-            <!-- Mensagem de Erro -->
-            <div id="error-message" class="error-message"></div>
-
-            <!-- Botão de Envio -->
-            <button type="submit">Registrar</button>
-            <a href="Inicial.html" class="button">Voltar</a>
-        </form>
-    </div>
+        if (response.ok) {
+          alert('Cadastro realizado com sucesso!');
+          window.location.href = 'Login.html'; // Redirecionar para o login
+        } else {
+          const errorData = await response.json();
+          document.getElementById('error-message').textContent = errorData.message || 'Erro ao registrar.';
+        }
+      } catch (error) {
+        console.error('Erro na requisição:', error);
+        document.getElementById('error-message').textContent = 'Erro ao conectar ao servidor.';
+      }
+    });
+  </script>
 </body>
-
 </html>
