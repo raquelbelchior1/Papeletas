@@ -5,54 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Boletim</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="consultar_boletim.css">
 </head>
 
 <body>
     <div class="container">
         <h1>Consultar Boletim</h1>
-
-        <!-- Formulário de busca -->
-        <form>
-            <label for="busca">Buscar por Nome do Aluno:</label>
-            <input type="text" id="busca" name="busca" placeholder="Digite o nome do aluno">
-            <button type="submit">Consultar</button>
-        </form>
-
-        <!-- Tabela para exibir os boletins -->
         <table>
             <thead>
                 <tr>
-                    <th>Nome da Matéria</th>
+                    <th>Matéria</th>
                     <th>Data</th>
-                    <th>Nome do Aluno</th>
-                    <th>Nome do Professor</th>
-                    <th>Faltas</th>
-                    <th>Status</th>
+                    <th>Falta</th>
+                    <th>Aluno</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Exemplo de dados (será preenchido dinamicamente pelo backend) -->
+                <!-- Exemplo de preenchimento dinâmico -->
                 <tr>
                     <td>Matemática</td>
-                    <td>2024-11-18</td>
+                    <td>15/11/2024</td>
+                    <td>2</td>
                     <td>João Silva</td>
-                    <td>Prof. Carlos</td>
-                    <td>3</td>
-                    <td class="status confirmado">Assinado</td>
-                </tr>
-                <tr>
-                    <td>História</td>
-                    <td>2024-11-15</td>
-                    <td>Maria Oliveira</td>
-                    <td>Prof. Ana</td>
-                    <td>1</td>
-                    <td class="status nao-confirmado">Não Assinado</td>
                 </tr>
             </tbody>
         </table>
-
-        <a href="home.html" class="button">Voltar</a>
     </div>
 </body>
 
