@@ -1,3 +1,4 @@
+/* Estilo geral do corpo */
 body {
     font-family: Arial, sans-serif;
     display: flex;
@@ -5,58 +6,82 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f5f5f5;
+    background-color: #f5f5f5; /* Fundo neutro */
 }
 
+/* Container principal */
 .container {
-    background: #fff;
+    background: #ffffff; /* Fundo branco */
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra consistente com o registrar */
     text-align: center;
+    width: 400px;
 }
 
+/* Rótulos */
 label {
     display: block;
     margin: 10px 0 5px;
+    font-weight: bold; /* Rótulos em negrito */
 }
 
+/* Campos de entrada */
 input {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
 }
 
+/* Botão principal */
 button {
     padding: 10px 20px;
     background: #007bff;
     color: #fff;
     border: none;
     border-radius: 4px;
+    font-weight: bold;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background: #0056b3;
 }
 
+/* Botão adicional */
 .button {
     display: inline-block;
     margin-top: 10px;
     padding: 10px 20px;
     background: #000000;
-    /* Fundo preto */
     color: #ffffff;
-    /* Texto branco */
     text-decoration: none;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
+    transition: background 0.3s ease;
 }
 
 .button:hover {
     background: #444444;
-    /* Cinza escuro no hover */
+}
+
+/* Adaptação para dispositivos menores */
+@media (max-width: 500px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+    label {
+        font-size: 14px;
+    }
+    input,
+    button {
+        font-size: 14px;
+    }
 }
