@@ -2,6 +2,8 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Boletim = require('../models/Boletim');
+
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'secreta'; // Garantir que tenha uma chave secreta
@@ -73,5 +75,65 @@ router.post('/register', async (req, res) => {
     res.status(500).json({ message: 'Erro interno ao registrar usuário' });
   }
 });
+
+// Criar boletim
+router.post('/boletins', async (req, res) => {
+  const { materia, data, faltas, aluno } = req.body;
+
+  try {
+      const novoBoletim = new Boletim({ materia, data, faltas, aluno });
+      await novoBoletim.save();
+      res.status(201).json({ message: 'Boletim criado com sucesso!' });
+  } catch (error) {
+      res.status(500).json({ message: 'Erro ao criar boletim' });
+  }
+});
+
+// Consultar boletins
+router.get('/boletins', async (req, res) => {
+  try {
+      const boletins = await Boletim.find();  // Adapte para filtrar boletins do aluno autenticado
+      res.json(boletins);
+  } catch (error) {
+      res.status(500).json({ message: 'Erro ao carregar boletins' });
+  }
+});
+// Rota para consultar boletins pendentes
+router.get('/boletins/pendentes', async (req, res) => {
+  try {
+      const boletinsPendentes = await Boletim.find({ status: 'pendente' }); // Filtra os boletins com status 'pendente'
+      res.json(boletinsPendentes);  // Retorna os boletins pendentes como resposta
+  } catch (error) {
+      res.status(500).json({ message: 'Erro ao buscar boletins pendentes', error });
+  }
+});
+// Rota para atualizar o status de um boletim
+// routes/boletins.js
+rrouter.patch('/boletins/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { status } = req.body;
+
+      if (!['pendente', 'aprovado', 'rejeitado'].includes(status)) {
+          return res.status(400).json({ error: 'Status inválido' });
+      }
+
+      const boletimAtualizado = await Boletim.findByIdAndUpdate(
+          id,
+          { status },
+          { new: true } // Retorna o boletim atualizado
+      );
+
+      if (!boletimAtualizado) {
+          return res.status(404).json({ error: 'Boletim não encontrado' });
+      }
+
+      res.json(boletimAtualizado);
+  } catch (error) {
+      console.error('Erro ao atualizar o boletim:', error);
+      res.status(500).json({ error: 'Erro interno do servidor' });
+  }
+});
+
 
 module.exports = router;

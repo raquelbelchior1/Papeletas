@@ -11,22 +11,61 @@
 <body>
     <div class="container">
         <h1>Criar Boletim</h1>
-        <form>
-            <label for="materia">Matéria:</label>
-            <input type="text" id="materia" name="materia" required>
-
-            <label for="data">Data:</label>
-            <input type="date" id="data" name="data" required>
-
-            <label for="falta">Falta:</label>
-            <input type="number" id="falta" name="falta" required>
-
-            <label for="aluno">Aluno:</label>
-            <input type="text" id="aluno" name="aluno" required>
-
-            <button type="submit">Salvar</button>
+        <form id="form-boletim">
+            <div class="input-group">
+                <label for="materia">Matéria:</label>
+                <input type="text" id="materia" name="materia" required placeholder="Digite a matéria">
+            </div>
+            <div class="input-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" required>
+            </div>
+            <div class="input-group">
+                <label for="faltas">Faltas:</label>
+                <input type="number" id="faltas" name="faltas" required placeholder="Número de faltas">
+            </div>
+            <div class="input-group">
+                <label for="aluno">Aluno:</label>
+                <input type="text" id="aluno" name="aluno" required placeholder="Seu nome">
+            </div>
+            <button type="submit">Criar Boletim</button>
         </form>
+        <div id="error-message" class="error-message"></div>
+        <a href="aluno.html" class="button">Voltar</a>
     </div>
+
+    <script>
+        document.getElementById('form-boletim').addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impede o envio do formulário
+
+            const materia = document.getElementById('materia').value;
+            const data = document.getElementById('data').value;
+            const faltas = document.getElementById('faltas').value;
+            const aluno = document.getElementById('aluno').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/boletins', {  // Ajuste o endpoint conforme necessário
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`  // Verifica se o aluno está autenticado
+                    },
+                    body: JSON.stringify({ materia, data, faltas, aluno })
+                });
+
+                const dataResponse = await response.json();
+
+                if (response.ok) {
+                    alert('Boletim criado com sucesso!');
+                    window.location.href = 'consultar_boletim.html';  // Redireciona para a página de consulta
+                } else {
+                    document.getElementById('error-message').textContent = dataResponse.message || 'Erro ao criar boletim';
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Erro de conexão com o servidor';
+            }
+        });
+    </script>
 </body>
 
 </html>

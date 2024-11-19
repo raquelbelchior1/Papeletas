@@ -7,6 +7,8 @@ const MONGO_URI="mongodb://localhost:27017/BancodePapeletas"
 
 const authRoutes = require('./routes/authRoutes');
 const papeletasRoutes = require('./routes/papeletas');
+const boletinsRoute = require('./routes/boletins');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,6 +31,8 @@ app.use(express.json());
 // Rotas
 app.use('/api/auth', authRoutes); // Rotas de autenticação (registro e login)
 app.use('/api/papeletas', papeletasRoutes); // Rotas de papeletas
+app.use('/api/auth/boletins', boletinsRoute); // Rota de boletins
+
 
 // Rota inicial de teste
 app.get('/', (req, res) => {

@@ -52,15 +52,16 @@
                     // Login bem-sucedido
                     alert('Login realizado com sucesso!');
                     localStorage.setItem('token', data.token); // Armazena o token no localStorage
-    
-                    // Verificar o tipo de usuário (aluno ou professor) na resposta
+                    
+                    // Armazenar o tipo de usuário no localStorage
                     const tipoUsuario = data.tipoUsuario; // Assume que o backend retorna 'aluno' ou 'professor'
-    
+                    localStorage.setItem('userType', tipoUsuario); // Armazena o tipo de usuário no localStorage
+
                     // Redireciona para a página correspondente
                     if (tipoUsuario === 'aluno') {
-                        window.location.href = '/frontend/home/aluno.html'; // Caminho relativo
+                        window.location.href = '/frontend/home/aluno.html'; // Caminho para a página do aluno
                     } else if (tipoUsuario === 'professor') {
-                        window.location.href = '/frontend/home/professor.html'; // Caminho relativo
+                        window.location.href = '/frontend/home/professor.html'; // Caminho para a página do professor
                     } else {
                         // Caso o tipo de usuário não seja reconhecido
                         document.getElementById('error-message').textContent = 'Tipo de usuário inválido';

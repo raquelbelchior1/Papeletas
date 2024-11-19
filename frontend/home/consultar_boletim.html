@@ -10,27 +10,191 @@
 
 <body>
     <div class="container">
-        <h1>Consultar Boletim</h1>
+        <h1>Consultar Boletins</h1>
         <table>
             <thead>
                 <tr>
                     <th>Matéria</th>
-                    <th>Data</th>
-                    <th>Falta</th>
                     <th>Aluno</th>
+                    <th>Data</th>
+                    <th>Status</th>
+                    <th id="col-acao">Ação</th> <!-- ID para identificar a coluna Ação -->
                 </tr>
             </thead>
-            <tbody>
-                <!-- Exemplo de preenchimento dinâmico -->
-                <tr>
-                    <td>Matemática</td>
-                    <td>15/11/2024</td>
-                    <td>2</td>
-                    <td>João Silva</td>
-                </tr>
+            <tbody id="boletins-list">
+                <!-- A lista de boletins será preenchida dinamicamente aqui -->
             </tbody>
         </table>
+        <a href="#" class="button" id="voltarButton">Voltar</a>
+        <a href="#" class="button" id="salvarButton" style="display: none;">Salvar</a> <!-- Novo botão -->
+
     </div>
+
+    <script>
+        // Função para carregar os boletins
+        async function carregarBoletins() {
+    try {
+        const response = await fetch('http://localhost:5000/api/auth/boletins');
+        const boletins = await response.json();
+        const listaBoletins = document.getElementById('boletins-list');
+        const tipoUsuario = localStorage.getItem('userType'); // Pegando o tipo de usuário
+
+        // Verificando se o tipo de usuário é "aluno" e ocultando a coluna "Ação" se for
+        const acaoColumnIndex = 4; // Índice da coluna "Ação" na tabela (base 0)
+
+        if (tipoUsuario === 'aluno') {
+            // Ocultando a coluna "Ação"
+            const thElements = document.querySelectorAll('th');
+            thElements[acaoColumnIndex].style.display = 'none'; // Oculta o cabeçalho da coluna "Ação"
+            const tdElements = document.querySelectorAll('td:nth-child(' + (acaoColumnIndex + 1) + ')');
+            tdElements.forEach(td => td.style.display = 'none'); // Oculta todas as células da coluna "Ação"
+        } else if (tipoUsuario === 'professor') {
+            // Exibindo o botão "Salvar" para o professor
+            document.getElementById('salvarButton').style.display = 'inline-block';
+        }
+
+        boletins.forEach(boletim => {
+            const tr = document.createElement('tr');
+            
+            // **Adiciona o ID do boletim como um atributo do elemento `<tr>`**
+            tr.setAttribute('data-id', boletim._id); 
+
+            const tdMateria = document.createElement('td');
+            tdMateria.textContent = boletim.materia;
+            tr.appendChild(tdMateria);
+
+            const tdAluno = document.createElement('td');
+            tdAluno.textContent = boletim.aluno;
+            tr.appendChild(tdAluno);
+
+            const tdData = document.createElement('td');
+            tdData.textContent = boletim.data;
+            tr.appendChild(tdData);
+
+            const tdStatus = document.createElement('td');
+            const statusElement = document.createElement('span');
+            statusElement.textContent = boletim.status;
+            statusElement.classList.add('status', boletim.status.toLowerCase());
+            tdStatus.appendChild(statusElement);
+            tr.appendChild(tdStatus);
+
+            // Se o tipo de usuário não for "aluno", adiciona a coluna de ação
+            if (tipoUsuario !== 'aluno') {
+                const tdAcao = document.createElement('td');
+                if (boletim.status === 'pendente') {
+                    const button = document.createElement('button');
+                    button.textContent = 'Assinar';
+                    button.onclick = async () => {
+                        const novoStatus = prompt('Digite o novo status (aprovado/rejeitado):');
+                        if (novoStatus === 'aprovado' || novoStatus === 'rejeitado') {
+                            // Atualiza o status do boletim na interface
+                            statusElement.textContent = novoStatus;
+                            statusElement.classList.remove('pendente');
+                            statusElement.classList.add(novoStatus);
+                            
+                            // Marca o boletim como alterado para salvar
+                            boletim.status = novoStatus; // Armazena a alteração
+                        } else {
+                            alert('Status inválido.');
+                        }
+                    };
+                    tdAcao.appendChild(button);
+                }
+                tr.appendChild(tdAcao);
+            }
+
+            listaBoletins.appendChild(tr);
+        });
+    } catch (error) {
+        console.error('Erro ao carregar boletins:', error);
+    }
+}
+
+
+        // Função para salvar as alterações feitas pelo professor
+        async function salvarAlteracoes() {
+            try {
+                const boletinsAlterados = []; // Array para armazenar boletins alterados
+                const tipoUsuario = localStorage.getItem('userType');
+
+                if (tipoUsuario !== 'professor') return; // Só o professor pode salvar alterações
+
+                // Percorre os boletins e verifica quais foram alterados
+                const boletins = document.querySelectorAll('#boletins-list tr');
+                boletins.forEach((linha) => {
+                    const cells = linha.getElementsByTagName('td');
+                    const status = cells[3].querySelector('span').textContent;
+                    const materia = cells[0].textContent;
+                    const aluno = cells[1].textContent;
+                    const data = cells[2].textContent;
+                    const id = linha.getAttribute('data-id'); // Assume que o id é atribuído à linha
+
+                    // Verifica se o status foi alterado
+                    if (status !== 'pendente') {
+                        boletinsAlterados.push({
+                            _id: id,
+                            materia: materia,
+                            aluno: aluno,
+                            data: data,
+                            status: status
+                        });
+                    }
+                });
+
+                // Envia as alterações para o servidor
+                if (boletinsAlterados.length > 0) {
+                    for (const boletim of boletinsAlterados) {
+                        await fetch(`http://localhost:5000/api/auth/boletins/${boletim._id}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ status: boletim.status })
+                        });
+                    }
+
+                    alert('Alterações salvas com sucesso!');
+                } else {
+                    alert('Nenhuma alteração para salvar.');
+                }
+            } catch (error) {
+                console.error('Erro ao salvar alterações:', error);
+            }
+        }
+
+        // Adiciona o evento de clique no botão "Salvar"
+        document.getElementById('salvarButton').addEventListener('click', (event) => {
+            event.preventDefault();
+            salvarAlteracoes();
+        });
+
+        // Função para redirecionar o usuário com base no tipo de usuário
+        function redirecionarPorTipo() {
+            const userType = localStorage.getItem('userType'); // Suponha que o tipo de usuário seja armazenado no localStorage (pode ser "aluno" ou "professor")
+            console.log("Tipo de usuário encontrado no localStorage:", userType); // Depuração
+
+            if (userType === 'aluno') {
+                window.location.href = 'aluno.html'; // Redireciona para a página do aluno
+            } else if (userType === 'professor') {
+                window.location.href = 'professor.html'; // Redireciona para a página do professor
+            } else {
+                alert('Tipo de usuário não reconhecido');
+                console.log('Tipo de usuário inválido ou não encontrado:', userType); // Depuração
+            }
+        }
+
+        // Adiciona o evento de clique no botão Voltar para chamar a função de redirecionamento
+        document.getElementById('voltarButton').addEventListener('click', (event) => {
+            event.preventDefault(); // Previne o comportamento padrão do link (que seria recarregar a página)
+            redirecionarPorTipo();  // Chama a função de redirecionamento
+        });
+
+        // Redireciona ao carregar a página
+        window.onload = () => {
+            carregarBoletins();
+        };
+
+    </script>
 </body>
 
 </html>

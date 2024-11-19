@@ -1,6 +1,6 @@
 // backend>routes>papeletas.js
 const express = require('express');
-const Papeleta = require('../models/Papeleta');
+const Papeleta = require('../models/Boletim');
 const User = require('../models/User');
 const isProfessor = require('../middleware/authMiddleware'); // Middleware para validar professor
 

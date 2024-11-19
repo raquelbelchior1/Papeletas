@@ -1,23 +1,90 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boletins Pendentes</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="boletins_pendentes.css">
 </head>
-
 <body>
     <div class="container">
         <h1>Boletins Pendentes</h1>
-        <ul>
-            <li>Boletim 1 - Aluno: João Silva</li>
-            <li>Boletim 2 - Aluno: Maria Oliveira</li>
-            <li>Boletim 3 - Aluno: Carlos Souza</li>
+        <ul id="boletins-pendentes-list">
+            <!-- A lista de boletins pendentes será preenchida dinamicamente aqui -->
         </ul>
-        <a href="home.html" class="button">Voltar</a>
+        <button id="salvarButton">Salvar Alterações</button>
+        <a href="professor.html" class="button">Voltar</a>
     </div>
-</body>
 
+    <script>
+        let boletinsPendentes = []; // Para armazenar os boletins carregados
+
+        async function carregarBoletinsPendentes() {
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/boletins/pendentes');
+                boletinsPendentes = await response.json();
+                const listaBoletinsPendentes = document.getElementById('boletins-pendentes-list');
+
+                // Limpa a lista existente
+                listaBoletinsPendentes.innerHTML = '';
+
+                boletinsPendentes.forEach(boletim => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <strong>Matéria:</strong> ${boletim.materia}<br>
+                        <strong>Aluno:</strong> ${boletim.aluno}<br>
+                        <strong>Data:</strong> ${boletim.data}<br>
+                        <select id="status-${boletim._id}">
+                            <option value="pendente" ${boletim.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+                            <option value="aprovado" ${boletim.status === 'aprovado' ? 'selected' : ''}>Aprovado</option>
+                            <option value="rejeitado" ${boletim.status === 'rejeitado' ? 'selected' : ''}>Rejeitado</option>
+                        </select>
+                    `;
+                    listaBoletinsPendentes.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar boletins pendentes:', error);
+            }
+        }
+
+        async function salvarAlteracoes() {
+            try {
+                let alteracoesFeitas = false;
+                for (let boletim of boletinsPendentes) {
+                    const novoStatus = document.getElementById(`status-${boletim._id}`).value;
+                    if (novoStatus !== boletim.status) {
+                        // Atualiza o status apenas se ele for diferente do atual
+                        const response = await fetch(`http://localhost:5000/api/auth/boletins/${boletim._id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status: novoStatus })
+                        });
+
+                        if (!response.ok) {
+                            console.error(`Erro ao atualizar boletim de ${boletim.aluno}: ${response.statusText}`);
+                            alert(`Erro ao atualizar boletim de ${boletim.aluno}.`);
+                        } else {
+                            alteracoesFeitas = true;
+                            alert(`Boletim de ${boletim.aluno} atualizado para ${novoStatus}`);
+                        }
+                    }
+                }
+                if (alteracoesFeitas) {
+                    alert("Alterações salvas com sucesso!");
+                } else {
+                    alert("Nenhuma alteração foi feita.");
+                }
+                window.location.reload();
+            } catch (error) {
+                console.error('Erro ao salvar alterações:', error);
+                alert('Erro ao salvar alterações. Por favor, tente novamente.');
+            }
+        }
+
+        // Event listener para o botão Salvar
+        document.getElementById('salvarButton').addEventListener('click', salvarAlteracoes);
+
+        window.onload = carregarBoletinsPendentes;
+    </script>
+</body>
 </html>
