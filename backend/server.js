@@ -7,7 +7,7 @@ const MONGO_URI="mongodb://localhost:27017/BancodePapeletas"
 
 const authRoutes = require('./routes/authRoutes');
 const papeletasRoutes = require('./routes/papeletas');
-const boletinsRoute = require('./routes/boletins');
+const boletinsRoute = require('./routes/authRoutes');
 
 
 const app = express();

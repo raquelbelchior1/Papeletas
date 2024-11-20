@@ -109,7 +109,7 @@ router.get('/boletins/pendentes', async (req, res) => {
 });
 // Rota para atualizar o status de um boletim
 // routes/boletins.js
-rrouter.patch('/boletins/:id', async (req, res) => {
+router.patch('/boletins/:id', async (req, res) => {
   try {
       const { id } = req.params;
       const { status } = req.body;
