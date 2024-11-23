@@ -33,6 +33,7 @@ https://www.figma.com/design/6eg2RWDZUsowZk3TTa9JHx/Untitled?node-id=0-1&t=OjiD8
 
 Use o seguinte URI de conexão:
 mongodb://localhost:27017/BancodePapeletas
+
 3. Execute o backend:
 
 Navegue até a pasta do backend:
